@@ -6,7 +6,8 @@ FOLLOW_BATCH = []
 from torch_geometric.data import Batch
 from models.sample import get_next_step
 import numpy as np
-
+from utils.surface import read_ply
+from utils.data import torchify_dict, ProteinLigandData
 
 @torch.no_grad()  # for a protein-ligand
 def get_init(data, model, transform, threshold):
@@ -131,3 +132,21 @@ def logp_to_rank_prob(logp, weight=1.0):
     prob = np.exp(logp_sum) + 1
     prob = prob * np.array(weight)
     return prob / prob.sum()
+
+def pdb_to_pocket_data(ply_file):
+    '''
+    use the sdf_file as the center 
+    '''
+    protein_dict = read_ply(ply_file)
+
+    data = ProteinLigandData.from_protein_ligand_dicts(
+        protein_dict = protein_dict,
+        ligand_dict = {
+            'element': torch.empty([0,], dtype=torch.long),
+            'pos': torch.empty([0, 3], dtype=torch.float),
+            'atom_feature': torch.empty([0, 8], dtype=torch.float),
+            'bond_index': torch.empty([2, 0], dtype=torch.long),
+            'bond_type': torch.empty([0,], dtype=torch.long),
+        }
+    )
+    return data

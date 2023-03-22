@@ -89,15 +89,17 @@ python ./data/surf_maker/surf_maker_test.py
 
 ## Generation 
 
-To run the generation, run the file 
+To run the generation, run the file. The model's parameters can be downloaded [here](https://drive.google.com/file/d/1tKIib7qRN5IdNXhVB_8v1EBYiWdU12v8/view?usp=share_link). Put it at ./ckpt. 
 
-```
-python surfgen.py 
+```python
+python gen.py --outdir example --check_point ./ckpt/val_119.pt --ply_file ./example/3cl_pocket_8.0_res_1.5.ply
 ```
 
 
 
 ## Training 
 
-
+```python
+python train.py
+```
 
