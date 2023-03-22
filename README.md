@@ -85,15 +85,29 @@ Now you have deployed all the dependent environments. Please follow the ./data/s
 python ./data/surf_maker/surf_maker_test.py
 ```
 
+If the surface is generated, you will find the .ply file in the ./data/surf_maker
+
+And we provide the generated surface file at ./data, namely 3cl_pocket_8.0_res_1.5.ply for further generation. 
+
+<div align=center>
+<img src="./assets/surface.png" width="50%" height="50%" alt="TOC" align=center />
+</div>
+
 
 
 ## Generation 
 
 To run the generation, run the file. The model's parameters can be downloaded [here](https://drive.google.com/file/d/1tKIib7qRN5IdNXhVB_8v1EBYiWdU12v8/view?usp=share_link). Put it at ./ckpt. 
 
+We provide a pharmaceutic target for Covid-19, 3cl protein in the ./example, run the following code to generate inhibitors directly inside the pocket! 
+
 ```python
 python gen.py --outdir example --check_point ./ckpt/val_119.pt --ply_file ./example/3cl_pocket_8.0_res_1.5.ply
 ```
+
+<div align=center>
+<img src="./assets/3cl_gen.png" width="50%" height="50%" alt="TOC" align=center />
+</div>
 
 
 
