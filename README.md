@@ -43,7 +43,7 @@ wget https://bits.csb.pitt.edu/files/it2_tt_0_lowrmsd_mols_test0_fixed.types -P 
 
 Then following the guideline to process it.  The train data split is [split_name.pt](https://drive.google.com/file/d/1WUZVNv--gztqDNoA3BEexXdjRfXKHuHn/view?usp=share_link). 
 
-If it's inconvenient for you, we also provided the [processed data](https://drive.google.com/file/d/1WEbPe7XsOCEmDrgMCrD7ZrkBmkFQ7KkK/view?usp=share_link), [processed_data_key](https://drive.google.com/file/d/1Ko_yDF14ck4Y73Tgnbt9jS-R68n0pzOT/view?usp=share_link) you just need to download them in ./data  and create a ./data/crossdock_pocket10 directory, and put the [index.pkl](https://drive.google.com/file/d/1-YCXOV-MWDOE-p6laQxOKPLPVJRakpL1/view?usp=share_link) in it. 
+If it's inconvenient for you, we also provided the [processed data](https://drive.google.com/file/d/1WEbPe7XsOCEmDrgMCrD7ZrkBmkFQ7KkK/view?usp=share_link), [processed_data_key](https://drive.google.com/file/d/1Ko_yDF14ck4Y73Tgnbt9jS-R68n0pzOT/view?usp=share_link), [name2id](https://drive.google.com/file/d/1zte17O7HZuNYD56wrvNzu-SSNjmLDE2r/view?usp=share_link). You just need to download them in ./data  and create a ./data/crossdock_pocket10 directory, and put the [index.pkl](https://drive.google.com/file/d/1-YCXOV-MWDOE-p6laQxOKPLPVJRakpL1/view?usp=share_link) in it. 
 
 
 
