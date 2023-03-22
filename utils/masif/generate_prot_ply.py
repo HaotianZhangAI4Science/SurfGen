@@ -25,18 +25,11 @@ from computeMSMS import computeMSMS
 from fixmesh import fix_mesh
 from save_ply import save_ply
 
-'''
-os.environ["LD_LIBRARY_PATH"] = "/home/shenchao/software/masif_software/APBS-3.0.0.Linux/lib:/home/shenchao/.conda/envs/deepdock/lib"
-msms_bin="/home/shenchao/software/masif_software/msms/msms.x86_64Linux2.2.6.1"
-apbs_bin="/home/shenchao/software/masif_software/APBS-3.0.0.Linux/bin/apbs"
-pdb2pqr_bin="/home/shenchao/software/masif_software/pdb2pqr-linux-bin64-2.1.1/pdb2pqr"
-multivalue_bin="/home/shenchao/software/masif_software/APBS-3.0.0.Linux/share/apbs/tools/bin/multivalue"
-'''
-os.environ["LD_LIBRARY_PATH"] = '/home/haotian/Molecule_Generation/APBS-3.0.0.Linux/lib:/home/haotian/software/miniconda3/envs/deepdock/lib'
-msms_bin="/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/APBS-3.0.0.Linux/bin/msms"
-apbs_bin = '/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/APBS-3.0.0.Linux/bin/apbs'
-pdb2pqr_bin="/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/pdb2pqr-linux-bin64-2.1.1/pdb2pqr"
-multivalue_bin="/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/APBS-3.0.0.Linux/share/apbs/tools/bin/multivalue"
+
+msms_bin="./install_software/APBS-3.0.0.Linux/bin/msms"
+apbs_bin = './install_software/APBS-3.0.0.Linux/bin/apbs'
+pdb2pqr_bin="./install_software/pdb2pqr-linux-bin64-2.1.1/pdb2pqr"
+multivalue_bin="./install_software/APBS-3.0.0.Linux/share/apbs/tools/bin/multivalue"
 
 def compute_inp_surface(prot_path, 
 						lig_path, 
@@ -262,22 +255,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-
-
-
-"""general set
-3udj
-1vjd
-3kvw
-6b5i
-5vlp
-4ayx
-3vjs
-3vjt
-3kr5
-
-compute_inp_surface("/home/haotian/molecules_confs/SDEGen-Plus/pdbbind/v2020-other-PL/%s/%s_prot/%s_p.pdb"%(pdbid, pdbid, pdbid), 
-					"/home/haotian/molecules_confs/SDEGen-Plus/pdbbind/v2020-other-PL/%s/%s_prot/%s_l.sdf"%(pdbid, pdbid, pdbid),  
-					"/home/haotian/molecules_confs/SDEGen-Plus/pdbbind/v2020-other-PL/%s/%s_prot"%(pdbid, pdbid))
-					
-'5mgf', '2y5k', '6bfx', '4i32', '6n4b', '4fri', '4umr', '3ctq'	"""				
