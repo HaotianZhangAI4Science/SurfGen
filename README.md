@@ -97,7 +97,7 @@ And we provide the generated surface file at ./data, namely 3cl_pocket_8.0_res_1
 
 ## Generation 
 
-To run the generation, run the file. The model's parameters can be downloaded [here](https://drive.google.com/file/d/1tKIib7qRN5IdNXhVB_8v1EBYiWdU12v8/view?usp=share_link). Put it at ./ckpt. 
+For generation, run the gen.py. The model's parameters can be downloaded [here](https://drive.google.com/file/d/1tKIib7qRN5IdNXhVB_8v1EBYiWdU12v8/view?usp=share_link). Put it at ./ckpt. 
 
 We provide a pharmaceutic target for Covid-19, 3cl protein in the ./example, run the following code to generate inhibitors directly inside the pocket! 
 
