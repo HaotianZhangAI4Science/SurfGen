@@ -20,7 +20,7 @@ If you're reluctant to use mamba:
 conda env create -f surfgen_environment.yml -n surfgen
 ```
 
-We also provide conda-packed file [here](env.tar.gz link). Download it and then unzip it in your conda/envs/dir. For me, the directory is ~/.conda/envs
+We also provide conda-packed file [here](https://doi.org/10.5281/zenodo.7758282). Download it and then unzip it in your conda/envs/dir. For me, the directory is ~/.conda/envs. Special thanks to the creators and organizers of zenodo, which provides a free platform to store large files for academic use. 
 
 ```
 mkdir ~/.conda/envs/surfgen
@@ -41,37 +41,51 @@ wget https://bits.csb.pitt.edu/files/it2_tt_0_lowrmsd_mols_train0_fixed.types -P
 wget https://bits.csb.pitt.edu/files/it2_tt_0_lowrmsd_mols_test0_fixed.types -P data/crossdock2020/
 ```
 
-Then following the guildline to process it.  The train data split is [split_name.pt](link). 
+Then following the guideline to process it.  The train data split is [split_name.pt](https://drive.google.com/file/d/1WUZVNv--gztqDNoA3BEexXdjRfXKHuHn/view?usp=share_link). 
 
-If it's inconvenient for you, we also provided the [processed surface data](surffile.tar.gz), you just need to download them in ./data  
+If it's inconvenient for you, we also provided the [processed data](https://drive.google.com/file/d/1WEbPe7XsOCEmDrgMCrD7ZrkBmkFQ7KkK/view?usp=share_link), [processed_data_key](https://drive.google.com/file/d/1Ko_yDF14ck4Y73Tgnbt9jS-R68n0pzOT/view?usp=share_link) you just need to download them in ./data  and create a ./data/crossdock_pocket10 directory, and put the [index.pkl](https://drive.google.com/file/d/1-YCXOV-MWDOE-p6laQxOKPLPVJRakpL1/view?usp=share_link) in it. 
 
-### Making surface data on your own. 
 
-#### Approach 1
 
-Although we have prepared the required data for training and evaluation at [data_link](needed to be uploaded). But you may want to apply SurfGen in your own case. So we provide the guideline for creating the surf_maker environment.
+### (Optional) Making surface data on your own. 
 
-`conda create -n surf_maker pymesh2 jupyter scipy joblib biopython rdkit` plyfile
+#### Create the base python environment
+
+##### Approach 1
+
+Although we have prepared the required data for training and evaluation above. But you may want to apply SurfGen in your own case. So we provide the guideline for creating the surf_maker environment.
+
+```python
+conda create -n surf_maker pymesh2 jupyter scipy joblib biopython rdkit plyfile -c conda-forge
+```
 
 We highly recommend using mamba instead of conda for speeding up. 
 
-`mamba create -n surf_maker pymesh2 jupyter scipy joblib biopython rdkit` plyfile
+```python
+mamba create -n surf_maker pymesh2 jupyter scipy joblib biopython rdkit plyfile -c conda-forge
+```
 
-#### Approach 2
+##### Approach 2
 
 We also provide the .yml file for creating environment
 
-`conda env create -f surf_maker_environment.yml`
+```
+conda env create -f surf_maker_environment.yml
+```
 
-#### Install APBS toolkits
+#### Install APBS Toolkits
 
 When the base python environment was created, then install [APBS-3.0.0](https://github.com/Electrostatics/apbs/releases), [pdb2pqr-2.1.1](https://github.com/Electrostatics/apbs-pdb2pqr/releases) on your computer. Then set the msms_bin, apbs_bin, pdb2pqr_bin, and multivalue_bin path directly in your ~/.bashrc, or just set them in the scripts when creating the surface file from the pdb file.  
 
-#### Try Generate surface now !
+#### Try Generate Surface Now !
 
 Now you have deployed all the dependent environments. Please follow the ./data/surf_maker for making surface data. Or run the ./data/surf_maker/surf_maker_test.py for testing whether you have figured out this environment successfully. 
 
-`python ./data/surf_maker/surf_maker_test.py`
+```python
+python ./data/surf_maker/surf_maker_test.py
+```
+
+
 
 ## Generation 
 
