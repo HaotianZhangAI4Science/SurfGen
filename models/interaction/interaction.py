@@ -3,8 +3,10 @@ from torch.nn import Module, ModuleList, LeakyReLU, LayerNorm
 from torch_scatter import scatter_sum
 from math import pi as PI
 
-from models.common import GaussianSmearing, EdgeExpansion
-from models.invariant import GVLinear, VNLeakyReLU, MessageModule
+from ..model_utils import GaussianSmearing, EdgeExpansion
+from ..invariant import GVLinear, VNLeakyReLU, MessageModule
+from .geodesic import Geodesic_GNN
+from .geoattn import Geoattn_GNN
 
 class CFTransformerEncoderVN(Module):
     

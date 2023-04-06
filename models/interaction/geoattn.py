@@ -7,7 +7,7 @@ from ..invariant import VNLinear, GVPerceptronVN
 import torch
 from torch_scatter import scatter_softmax
 from torch.nn import Sigmoid
-from .. model_utils import  GaussianSmearing
+from ..model_utils import  GaussianSmearing
 
 class EdgeMapping(nn.Module):
     def __init__(self, edge_channels):
@@ -49,9 +49,9 @@ class Geoattn_GNN(nn.Module):
         self.resi_connecter = GVLinear(node_sca_dim,node_vec_dim,node_sca_dim,node_vec_dim)
         self.aggr_out = GVPerceptronVN(node_sca_dim,node_vec_dim,node_sca_dim,node_vec_dim)
     
-    def forward(self, node_feats, edge_feature, edge_vector, edge_index, node_pos):
-        num_nodes = node_pos.shape[0]
-        edge_dist = torch.norm(node_pos[edge_index[0]]-node_pos[edge_index[1]], dim=-1)
+    def forward(self, node_feats, edge_feature, edge_vector, edge_index):
+        num_nodes = node_feats[0].shape[0]
+        edge_dist = torch.norm(edge_vector, dim=-1)
         edge_index_row = edge_index[0]
 
         ## map edge_features: original space -> interation space

@@ -3,12 +3,11 @@ from torch.nn import Module
 from torch.nn import functional as F
 
 from .interaction import get_encoder_vn
-from .geometry import get_field_vn
-from .common import *
+from .model_utils import *
 from .embedding import AtomEmbedding
-from .frontier import FrontierLayerVN
-from .position import PositionPredictor
-# from .debug import check_true_bonds_len, check_pred_bonds_len
+from .generation import get_field_vn  # topology generation
+from .generation import FrontierLayerVN  # attachment
+from .generation import PositionPredictor # geometry generation
 from utils.misc import unique
 
 class SurfGen(Module):

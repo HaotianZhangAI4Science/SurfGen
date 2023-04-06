@@ -7,7 +7,16 @@ from math import pi
 from ..invariant import VNLinear, GVPerceptronVN
 import torch
 
-
+class EdgeMapping(nn.Module):
+    def __init__(self, edge_channels):
+        super().__init__()
+        self.nn = nn.Linear(in_features=1, out_features=edge_channels, bias=False)
+    
+    def forward(self, edge_vector):
+        edge_vector = edge_vector / (torch.norm(edge_vector, p=2, dim=1, keepdim=True)+1e-7)
+        expansion = self.nn(edge_vector.unsqueeze(-1)).transpose(1, -1)
+        return expansion
+        
 class Geodesic_GNN(nn.Module):
     def __init__(self, node_sca_dim=256, node_vec_dim=64, hid_dim=128, edge_dim=64, num_edge_types=2, \
         out_sca_dim=256, out_vec_dim=64, cutoff = 10.):
@@ -32,7 +41,7 @@ class Geodesic_GNN(nn.Module):
         self.resi_connecter = GVLinear(node_sca_dim,node_vec_dim,node_sca_dim,node_vec_dim)
         self.aggr_out = GVLinear(node_sca_dim,node_vec_dim,node_sca_dim,node_vec_dim)
     
-    def forward(self, node_feats, edge_feature, edge_vector edge_index, gds_dist):
+    def forward(self, node_feats, edge_feature, edge_vector, edge_index, gds_dist):
 
         ## map edge_fetures: original space -> interaction space
         edge_sca_feat = torch.cat([self.distance_expansion(gds_dist), edge_feature], dim=-1)

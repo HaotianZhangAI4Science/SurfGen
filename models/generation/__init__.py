@@ -1,4 +1,6 @@
-from .classifier import SpatialClassifierVN
+from .topology import SpatialClassifierVN
+from .attachment import FrontierLayerVN
+from .geometry import PositionPredictor
 
 def get_field_vn(config, num_classes, num_bond_types, in_sca, in_vec):
     if config.name == 'classifier':
