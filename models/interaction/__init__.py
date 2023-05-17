@@ -1,4 +1,4 @@
-from .cftfm import CFTransformerEncoderVN
+from .interaction import CFTransformerEncoderVN
 
 
 def get_encoder_vn(config):
