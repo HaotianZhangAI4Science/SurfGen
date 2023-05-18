@@ -4,8 +4,9 @@
 from torch import nn
 from torch_scatter import scatter_sum
 from math import pi 
-from ..invariant import VNLinear, GVPerceptronVN
+from ..invariant import VNLinear, GVPerceptronVN, GVLinear
 import torch
+from ..model_utils import  GaussianSmearing
 
 class EdgeMapping(nn.Module):
     def __init__(self, edge_channels):
@@ -21,7 +22,7 @@ class Geodesic_GNN(nn.Module):
     def __init__(self, node_sca_dim=256, node_vec_dim=64, hid_dim=128, edge_dim=64, num_edge_types=2, \
         out_sca_dim=256, out_vec_dim=64, cutoff = 10.):
         super().__init__()
-
+        self.cutoff = cutoff
         self.edge_expansion = EdgeMapping(edge_dim)
         self.distance_expansion = GaussianSmearing(stop=cutoff, num_gaussians=edge_dim - num_edge_types)
 
@@ -42,7 +43,8 @@ class Geodesic_GNN(nn.Module):
         self.aggr_out = GVLinear(node_sca_dim,node_vec_dim,node_sca_dim,node_vec_dim)
     
     def forward(self, node_feats, edge_feature, edge_vector, edge_index, gds_dist):
-
+        
+        num_nodes = node_feats[0].shape[0]
         ## map edge_fetures: original space -> interaction space
         edge_sca_feat = torch.cat([self.distance_expansion(gds_dist), edge_feature], dim=-1)
         edge_vec_feat = self.edge_expansion(edge_vector) 
@@ -54,8 +56,8 @@ class Geodesic_GNN(nn.Module):
         edge_sca_feat, edge_vec_feat = self.edge_mapper([edge_sca_feat, edge_vec_feat])
         node_sca_feats, node_vec_feats = node_sca_feats[edge_index_row], node_vec_feats[edge_index_row]
         ## geodesic coefficient 
-        coeff = 0.5 * (torch.cos(gds_dist * pi / cutoff) + 1.0)
-        coeff = coeff * (gds_dist <= cutoff) * (gds_dist >= 0.0)
+        coeff = 0.5 * (torch.cos(gds_dist * pi / self.cutoff) + 1.0)
+        coeff = coeff * (gds_dist <= self.cutoff) * (gds_dist >= 0.0)
         ## compute the scalar message
         msg_sca_emb = self.node_sca_sca(node_sca_feats) * self.edge_sca_sca(edge_sca_feat)
         msg_sca_emb = msg_sca_emb * coeff.view(-1,1)
