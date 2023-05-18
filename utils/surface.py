@@ -29,22 +29,22 @@ def geodesic_matrix(pos,edge_index):
     return shortest_path_mat
 
 
-def dst2knn_graph(dst_mat, num_knn=24, self_loop=False):
-    '''
-    dst_mat = distance_matrix(pos,pos)
-    geo_mat = geodesic_matrix(pos,edge_index)
-    '''
+def dst2knnedge(dst_mat, num_knn=24, self_loop=False):
     knn_edge_index_src = []
     knn_edge_index_tgt = []
+    knn_edge_dist = []
     num_nodes = dst_mat.shape[0]
     for node_idx in range(num_nodes):
         knn_edge_index_src.extend([node_idx]*num_knn)
+        
         if self_loop:
-            knn_edge_index_tgt.extend(np.argsort(dst_mat[node_idx])[num_knn+1])
+            knn_edge_index_tgt.extend(np.argsort(dst_mat[node_idx])[:num_knn])
+            knn_edge_dist.extend(np.sort(dst_mat[node_idx])[:num_knn])
         else:
             knn_edge_index_tgt.extend(np.argsort(dst_mat[node_idx])[1:num_knn+1])
-    
-    return np.array([knn_edge_index_src,knn_edge_index_tgt])
+            knn_edge_dist.extend(np.sort(dst_mat[node_idx])[1:num_knn+1])
+
+    return torch.tensor(np.array([knn_edge_index_src,knn_edge_index_tgt])), torch.tensor(np.array(knn_edge_dist,dtype=np.float32))
 
 
 def read_ply(path, read_face=None):

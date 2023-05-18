@@ -11,12 +11,12 @@ from ..data import ProteinLigandData, torchify_dict
 
 class SurfLigandPairDataset(Dataset):
 
-    def __init__(self, raw_path, transform=None):
+    def __init__(self, raw_path, suffix='_processed.lmdb', name2id='_name2id.pt', transform=None):
         super().__init__()
         self.raw_path = raw_path.rstrip('/')
         self.index_path = os.path.join(self.raw_path, 'index.pkl')
-        self.processed_path = os.path.join(os.path.dirname(self.raw_path), os.path.basename(self.raw_path) + '_processed.lmdb')
-        self.name2id_path = os.path.join(os.path.dirname(self.raw_path), os.path.basename(self.raw_path) + '_name2id.pt')
+        self.processed_path = os.path.join(os.path.dirname(self.raw_path), os.path.basename(self.raw_path) + suffix)
+        self.name2id_path = os.path.join(os.path.dirname(self.raw_path), os.path.basename(self.raw_path) + name2id)
         self.transform = transform
         self.db = None
         self.keys = None

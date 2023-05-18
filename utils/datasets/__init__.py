@@ -3,7 +3,7 @@ import torch
 import os
 import numpy as np
 from torch.utils.data import Subset
-from .pl import SurfLigandPairDataset
+from .dataset import SurfLigandPairDataset
 
 
 def get_dataset(config, *args, **kwargs):

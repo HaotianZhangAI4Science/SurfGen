@@ -26,11 +26,16 @@ from fixmesh import fix_mesh
 from save_ply import save_ply
 
 
-msms_bin="./install_software/APBS-3.0.0.Linux/bin/msms"
-apbs_bin = './install_software/APBS-3.0.0.Linux/bin/apbs'
-pdb2pqr_bin="./install_software/pdb2pqr-linux-bin64-2.1.1/pdb2pqr"
-multivalue_bin="./install_software/APBS-3.0.0.Linux/share/apbs/tools/bin/multivalue"
+# msms_bin="./install_software/APBS-3.0.0.Linux/bin/msms"
+# apbs_bin = './install_software/APBS-3.0.0.Linux/bin/apbs'
+# pdb2pqr_bin="./install_software/pdb2pqr-linux-bin64-2.1.1/pdb2pqr"
+# multivalue_bin="./install_software/APBS-3.0.0.Linux/share/apbs/tools/bin/multivalue"
 
+#os.environ["LD_LIBRARY_PATH"] = '/home/haotian/Molecule_Generation/APBS-3.0.0.Linux/lib:/home/haotian/software/miniconda3/envs/deepdock/lib'
+msms_bin="/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/APBS-3.0.0.Linux/bin/msms"
+apbs_bin = '/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/APBS-3.0.0.Linux/bin/apbs'
+pdb2pqr_bin="/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/pdb2pqr-linux-bin64-2.1.1/pdb2pqr"
+multivalue_bin="/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/APBS-3.0.0.Linux/share/apbs/tools/bin/multivalue"
 def compute_inp_surface(prot_path, 
 						lig_path, 
 						outdir='.',
