@@ -3,6 +3,12 @@
 <div align=center>
 <img src="./assets/toc.png" width="50%" height="50%" alt="TOC" align=center />
 </div>
+<div align=center>
+<img src="./assets/96.gif" width="50%" height="50%" alt="TOC" align=center />
+</div>
+
+
+<center> The illustration of the generation process </center>
 
 ## Environment
 
@@ -22,7 +28,7 @@ conda env create -f surfgen_environment.yml -n surfgen
 
 We also provide conda-packed file [here](https://doi.org/10.5281/zenodo.7758282). Download it and then unzip it in your conda/envs/dir. For me, the directory is ~/.conda/envs. Special thanks to the creators and organizers of zenodo, which provides a free platform to store large files for academic use. 
 
-```
+```shell
 mkdir ~/.conda/envs/surfgen
 tar -xzvf surfgen.tar.gz -C ~/.conda/envs/surfgen
 conda activate surfgen
@@ -43,13 +49,13 @@ wget https://bits.csb.pitt.edu/files/it2_tt_0_lowrmsd_mols_test0_fixed.types -P 
 
 Then following the guideline to process it.  The train data split is [split_name.pt](https://drive.google.com/file/d/1WUZVNv--gztqDNoA3BEexXdjRfXKHuHn/view?usp=share_link). 
 
-If it's inconvenient for you, we also provided the [processed data](https://drive.google.com/file/d/1WEbPe7XsOCEmDrgMCrD7ZrkBmkFQ7KkK/view?usp=share_link), [processed_data_key](https://drive.google.com/file/d/1Ko_yDF14ck4Y73Tgnbt9jS-R68n0pzOT/view?usp=share_link), [name2id](https://drive.google.com/file/d/1zte17O7HZuNYD56wrvNzu-SSNjmLDE2r/view?usp=share_link). You just need to download them in ./data  and create a ./data/crossdock_pocket10 directory, and put the [index.pkl](https://drive.google.com/file/d/1-YCXOV-MWDOE-p6laQxOKPLPVJRakpL1/view?usp=share_link) in it. 
+If it's inconvenient for you, we also provided the [processed data](https://drive.google.com/file/d/1WEbPe7XsOCEmDrgMCrD7ZrkBmkFQ7KkK/view?usp=share_link), [processed_data_key](https://drive.google.com/file/d/1Ko_yDF14ck4Y73Tgnbt9jS-R68n0pzOT/view?usp=share_link), [name2id](https://drive.google.com/file/d/1zte17O7HZuNYD56wrvNzu-SSNjmLDE2r/view?usp=share_link). You just need to download them in ./data  and create a ./data/crossdock_pocket10 directory, and put the [index.pkl](https://drive.google.com/file/d/1-YCXOV-MWDOE-p6laQxOKPLPVJRakpL1/view?usp=share_link) in it. （[Zenodo backup](`https://doi.org/10.5281/zenodo.7751348`)）
 
 
 
 ### (Optional) Making surface data on your own. 
 
-#### Create the base python environment
+#### Create the base Python environment
 
 ##### Approach 1
 
