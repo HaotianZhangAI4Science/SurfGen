@@ -3,6 +3,8 @@ from torch.nn import Module
 from torch.nn import functional as F
 
 from .interaction import get_encoder_vn
+from .interaction.geoattn import Geoattn_GNN
+from .interaction.geodesic import Geodesic_GNN
 from .model_utils import *
 from .embedding import AtomEmbedding
 from .generation import get_field_vn  # topology generation
@@ -20,7 +22,8 @@ class SurfGen(Module):
         self.emb_dim = [config.hidden_channels, config.hidden_channels_vec]
         self.protein_atom_emb = AtomEmbedding(protein_atom_feature_dim, 1, *self.emb_dim)
         self.ligand_atom_emb = AtomEmbedding(ligand_atom_feature_dim, 1, *self.emb_dim)
-
+        self.topologic_learner = Geodesic_GNN(node_sca_dim=self.emb_dim[0], node_vec_dim=self.emb_dim[1])
+        self.geometry_learner = Geoattn_GNN(node_sca_dim=self.emb_dim[0], node_vec_dim=self.emb_dim[1])
         self.encoder = get_encoder_vn(config.encoder)
         in_sca, in_vec = self.encoder.out_sca, self.encoder.out_vec
         self.field = get_field_vn(config.field, num_classes=num_classes, num_bond_types=num_bond_types, 
@@ -39,13 +42,14 @@ class SurfGen(Module):
         compose_feature,
         compose_pos,
         idx_protein,
-        compose_knn_edge_index,
-        compose_knn_edge_feature,
+        gds_edge_sca, gds_knn_edge_index, gds_dist,
+        compose_knn_edge_index,compose_knn_edge_feature,
         n_samples_pos=-1,
         n_samples_atom=-1
         ):
         idx_ligand = torch.empty(0).to(idx_protein)  # fake index of ligand
-        focal_resutls = self.sample_focal(compose_feature, compose_pos, idx_ligand, idx_protein, compose_knn_edge_index, compose_knn_edge_feature)
+        focal_resutls = self.sample_focal(compose_feature, compose_pos, idx_ligand, idx_protein, gds_edge_sca, gds_knn_edge_index, gds_dist, 
+                                                compose_knn_edge_index, compose_knn_edge_feature)
         if focal_resutls[0]:  # has frontiers
             has_frontier, idx_frontier, p_frontier, idx_focal_in_compose, p_focal, h_compose = focal_resutls
             pos_generated, pdf_pos, idx_parent, abs_pos_mu, pos_sigma, pos_pi = self.sample_position(
@@ -69,8 +73,8 @@ class SurfGen(Module):
         compose_pos,
         idx_ligand,
         idx_protein,
-        compose_knn_edge_index,
-        compose_knn_edge_feature,
+        gds_edge_sca, gds_knn_edge_index, gds_dist,
+        compose_knn_edge_index, compose_knn_edge_feature,
         ligand_context_bond_index,
         ligand_context_bond_type,
         n_samples_pos=-1,
@@ -80,7 +84,8 @@ class SurfGen(Module):
         freeze=None,
         anchor=None,
         ):
-        focal_resutls = self.sample_focal(compose_feature, compose_pos, idx_ligand, idx_protein, compose_knn_edge_index, compose_knn_edge_feature, frontier_threshold=frontier_threshold, freeze=freeze,anchor=anchor)
+        focal_resutls = self.sample_focal(compose_feature, compose_pos, idx_ligand, idx_protein, gds_edge_sca, gds_knn_edge_index, gds_dist,
+                                          compose_knn_edge_index, compose_knn_edge_feature, frontier_threshold=frontier_threshold, freeze=freeze,anchor=anchor)
         if focal_resutls[0]:  # has frontiers
             has_frontier, idx_frontier, p_frontier, idx_focal_in_compose, p_focal, h_compose = focal_resutls
             pos_generated, pdf_pos, idx_parent, abs_pos_mu, pos_sigma, pos_pi = self.sample_position(
@@ -105,8 +110,8 @@ class SurfGen(Module):
             compose_pos,
             idx_ligand,
             idx_protein,
-            compose_knn_edge_index,
-            compose_knn_edge_feature,
+            gds_edge_sca, gds_knn_edge_index, gds_dist,
+            compose_knn_edge_index,compose_knn_edge_feature,
             n_samples=-1,
             frontier_threshold=0,
             anchor = None,
@@ -119,8 +124,10 @@ class SurfGen(Module):
             select 3 candidates for focal atom determination 
         '''
         # # 0: encode 
-        h_compose = embed_compose(compose_feature, compose_pos, idx_ligand, idx_protein,
-                                      self.ligand_atom_emb, self.protein_atom_emb, self.emb_dim)
+        h_compose = interaction_embed(compose_feature, compose_pos, idx_ligand, idx_protein,
+                                    gds_edge_sca, gds_knn_edge_index, gds_dist,
+                                    compose_knn_edge_feature, compose_knn_edge_index,
+                                        self.ligand_atom_emb, self.protein_atom_emb, self.topologic_learner, self.geometry_learner, self.emb_dim)
         h_compose = self.encoder(
             node_attr = h_compose,
             pos = compose_pos,
@@ -180,16 +187,18 @@ class SurfGen(Module):
             compose_pos,
             idx_ligand,
             idx_protein,
-            compose_knn_edge_index,
-            compose_knn_edge_feature,
+            gds_edge_sca, gds_knn_edge_index, gds_dist,
+            compose_knn_edge_index,compose_knn_edge_feature,
             n_samples=-1,
             frontier_threshold=0,
             anchor = None,
             freeze = None
         ):
         # # 0: encode 
-        h_compose = embed_compose(compose_feature, compose_pos, idx_ligand, idx_protein,
-                                      self.ligand_atom_emb, self.protein_atom_emb, self.emb_dim)
+        h_compose = interaction_embed(compose_feature, compose_pos, idx_ligand, idx_protein,
+                                    gds_edge_sca, gds_knn_edge_index, gds_dist,
+                                    compose_knn_edge_feature, compose_knn_edge_index,
+                                        self.ligand_atom_emb, self.protein_atom_emb, self.topologic_learner, self.geometry_learner, self.emb_dim)
         h_compose = self.encoder(
             node_attr = h_compose,
             pos = compose_pos,
@@ -379,12 +388,15 @@ class SurfGen(Module):
                           y_frontier,  # frontier labels
                           idx_focal,  pos_generate,  # focal and generated positions  #NOTE: idx are in comopse
                           idx_protein_all_mask, y_protein_frontier,  # surface of protein
+                          gds_edge_sca, gds_knn_edge_index, gds_dist,
                           compose_knn_edge_index, compose_knn_edge_feature, real_compose_knn_edge_index,  fake_compose_knn_edge_index  # edges in compose, query-compose
         ):
 
         # # emebedding
-        h_compose = embed_compose(compose_feature, compose_pos, idx_ligand, idx_protein,
-                                      self.ligand_atom_emb, self.protein_atom_emb, self.emb_dim)
+        h_compose = interaction_embed(compose_feature, compose_pos, idx_ligand, idx_protein,
+                                    gds_edge_sca, gds_knn_edge_index, gds_dist,
+                                    compose_knn_edge_feature, compose_knn_edge_index,
+                                        self.ligand_atom_emb, self.protein_atom_emb, self.topologic_learner, self.geometry_learner, self.emb_dim)
         # # Encode compose
         h_compose = self.encoder(
             node_attr = h_compose,

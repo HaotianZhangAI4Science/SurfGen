@@ -36,6 +36,7 @@ msms_bin="/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/APBS
 apbs_bin = '/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/APBS-3.0.0.Linux/bin/apbs'
 pdb2pqr_bin="/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/pdb2pqr-linux-bin64-2.1.1/pdb2pqr"
 multivalue_bin="/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/APBS-3.0.0.Linux/share/apbs/tools/bin/multivalue"
+
 def compute_inp_surface(prot_path, 
 						lig_path, 
 						outdir='.',

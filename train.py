@@ -13,7 +13,7 @@ from utils.misc import *
 from utils.train import *
 from time import time
 from utils.train import get_model_loss
-from utils.datasets.pl import SurfLigandPairDataset
+from utils.datasets.dataset import SurfLigandPairDataset
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, default='./configs/train.yml')
@@ -47,6 +47,7 @@ transform = Compose([
     LigandCountNeighbors(),
     protein_featurizer,
     ligand_featurizer,
+    Geodesic_builder(),
     masking,
     composer,
 
@@ -146,7 +147,7 @@ def train(verbose=1, num_epoches = 300):
     if config.train.resume_train:
         ckpt_name = config.train.ckpt_name
         start_epoch = int(config.train.start_epoch)
-        best_loss = load(config.train.checkpoint_path,ckpt_name)
+        best_loss = load(osp.join(config.train.checkpoint_path,ckpt_name))
     logger.info('start training...')
 
     for epoch in range(num_epoches):

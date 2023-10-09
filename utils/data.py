@@ -76,6 +76,10 @@ class ProteinLigandData(Data):
             return self['compose_pos'].size(0)
         elif key == 'idx_protein_all_mask':
             return self['compose_pos'].size(0)
+        
+        elif key == 'gds_knn_edge_index':
+            return self['protein_pos'].size(0)
+        
         else:
             return super().__inc__(key, value)
 

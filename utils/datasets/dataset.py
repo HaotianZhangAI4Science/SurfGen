@@ -11,12 +11,11 @@ from ..data import ProteinLigandData, torchify_dict
 
 class SurfLigandPairDataset(Dataset):
 
-    def __init__(self, raw_path, suffix='_processed.lmdb', name2id='_name2id.pt', transform=None):
+    def __init__(self, index_path='./data/crossdocked_pocket10/index.pkl',processed_path='./data/crossdock_data/crossdock_data_gdsprocessed.lmdb', name2id='./data/crossdocked_name2id.pt', transform=None):
         super().__init__()
-        self.raw_path = raw_path.rstrip('/')
-        self.index_path = os.path.join(self.raw_path, 'index.pkl')
-        self.processed_path = os.path.join(os.path.dirname(self.raw_path), os.path.basename(self.raw_path) + suffix)
-        self.name2id_path = os.path.join(os.path.dirname(self.raw_path), os.path.basename(self.raw_path) + name2id)
+        self.index_path = index_path
+        self.processed_path = processed_path
+        self.name2id_path = name2id
         self.transform = transform
         self.db = None
         self.keys = None
@@ -47,10 +46,10 @@ class SurfLigandPairDataset(Dataset):
         for i in tqdm(range(self.__len__()), 'Indexing'):
             try:
                 data = self.__getitem__(i)
-            except AssertionError as e:
+            except (AssertionError, ValueError) as e:
                 print(i, e)
                 continue
-            name = (data.protein_filename, data.ligand_filename)
+            name = (data.pocket_filename, data.ligand_filename)
             name2id[name] = i
         torch.save(name2id, self.name2id_path)
 

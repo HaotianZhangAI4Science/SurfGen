@@ -42,16 +42,20 @@ class Geodesic_GNN(nn.Module):
         self.resi_connecter = GVLinear(node_sca_dim,node_vec_dim,node_sca_dim,node_vec_dim)
         self.aggr_out = GVLinear(node_sca_dim,node_vec_dim,node_sca_dim,node_vec_dim)
     
-    def forward(self, node_feats, edge_feature, edge_vector, edge_index, gds_dist):
+    def forward(self, node_feats, node_pos, edge_feature, edge_index, gds_dist):
         
         num_nodes = node_feats[0].shape[0]
+        edge_index_row = edge_index[0]
+        edge_index_col = edge_index[1]
+        edge_vector = node_pos[edge_index_row] - node_pos[edge_index_col]
+        
         ## map edge_fetures: original space -> interaction space
         edge_sca_feat = torch.cat([self.distance_expansion(gds_dist), edge_feature], dim=-1)
         edge_vec_feat = self.edge_expansion(edge_vector) 
 
         # Geodesic Message Passing 
         ## mapping the node and edge features to the same space 
-        edge_index_row = edge_index[0]
+
         node_sca_feats, node_vec_feats = self.node_mapper(node_feats)
         edge_sca_feat, edge_vec_feat = self.edge_mapper([edge_sca_feat, edge_vec_feat])
         node_sca_feats, node_vec_feats = node_sca_feats[edge_index_row], node_vec_feats[edge_index_row]

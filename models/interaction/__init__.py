@@ -1,9 +1,9 @@
-from .interaction import CFTransformerEncoderVN
+from .interaction import TransformerFeatureMixer
 
 
 def get_encoder_vn(config):
     if config.name == 'cftfm':
-        return CFTransformerEncoderVN(
+        return TransformerFeatureMixer(
             hidden_channels = [config.hidden_channels, config.hidden_channels_vec],
             edge_channels = config.edge_channels,
             key_channels = config.key_channels,  # not use

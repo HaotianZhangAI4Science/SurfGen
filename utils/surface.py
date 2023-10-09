@@ -84,4 +84,12 @@ def read_ply_geom(path, read_face=None):
         data = Data(x=features,pos=pos)
     return data
 
+def parse_face(path, read_face=None):
+    with open(path, 'rb') as f:
+        data = PlyData.read(f)
 
+    faces = data['face']['vertex_indices']
+    faces = [torch.tensor(fa, dtype=torch.long) for fa in faces]
+    face = torch.stack(faces, dim=-1)
+
+    return face

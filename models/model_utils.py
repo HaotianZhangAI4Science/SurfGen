@@ -273,6 +273,23 @@ def compose_context_vn(h_ligand, h_protein, pos_ligand, pos_protein, batch_ligan
 
     return (sca_ctx, vec_ctx), pos_ctx, batch_ctx, is_mol_atom
 
+def interaction_embed(compose_feature, compose_pos, idx_ligand, idx_protein,
+                      gds_edge_sca, gds_knn_edge_index, gds_dist,
+                      compose_knn_edge_feature, compose_knn_edge_index,
+                        ligand_atom_emb, protein_atom_emb, surface_embder, geometry_embder,emb_dim):
+    h_ligand = ligand_atom_emb(compose_feature[idx_ligand], compose_pos[idx_ligand])
+    h_protein = protein_atom_emb(compose_feature[idx_protein], compose_pos[idx_protein])
+
+    h_geodesic = surface_embder(h_protein, compose_pos[idx_protein], gds_edge_sca, gds_knn_edge_index, gds_dist)
+
+    h_sca = torch.zeros([len(compose_pos), emb_dim[0]],).to(h_ligand[0])
+    h_vec = torch.zeros([len(compose_pos), emb_dim[1], 3],).to(h_ligand[1])
+    h_sca[idx_ligand], h_sca[idx_protein] = h_ligand[0], h_geodesic[0]
+    h_vec[idx_ligand], h_vec[idx_protein] = h_ligand[1], h_geodesic[1]
+    
+    h_compose = geometry_embder([h_sca, h_vec], compose_pos, compose_knn_edge_feature, compose_knn_edge_index)
+    
+    return h_compose
 
 def get_compose_knn_graph(
         pos_compose,

@@ -544,6 +544,7 @@ def pocket_trunction(pdb_file, threshold=10, outname=None, sdf_file=None, centro
     f.write(residue_block)
     f.close()
     return outname
+    
 def sdf2centroid(sdf_file):
     supp = Chem.SDMolSupplier(sdf_file, sanitize=False)
     lig_xyz = supp[0].GetConformer().GetPositions()

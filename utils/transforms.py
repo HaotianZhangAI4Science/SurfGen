@@ -191,32 +191,32 @@ class LigandCountNeighbors(object):
 
 class Geodesic_builder(object):
 
-    def  __init__(self, protein_dim, ligand_dim, knn):
+    def  __init__(self, knn=16):
         super().__init__()
-        self.protein_dim = protein_dim
-        self.ligand_dim = ligand_dim
         self.knn = knn  # knn of compose atoms
     
     def __call__(self, data:ProteinLigandData):
         # construct the Delanay edge 
         surf_pos = data.protein_pos
         num_nodes = surf_pos.shape[0]
-        surf_face = data.surf_face
+        surf_face = data.face
         edge_index = torch.cat([surf_face[:2], surf_face[1:], surf_face[::2]], dim=1)
-        dlny_edge_index = to_undirected(edge_index, num_nodes=data.num_nodes)
+        dlny_edge_index = to_undirected(edge_index, num_nodes=num_nodes)
 
         # conrtruct the geodesic distance matrix corresponding to the Delanay edge 
-        gds_mat = geodesic_matrix(surf_pos, dlny_edge_index)
+        # gds_mat = geodesic_matrix(surf_pos, dlny_edge_index)
 
         # construct the knn_edge_index according to geodesic distance
-        gds_knn_edge_index, gds_knn_edge_dist = dst2knnedge(gds_mat, num_knn=self.knn)
+        # gds_knn_edge_index and gds_knn_edge_dist have been pre-computed
+        # gds_knn_edge_index, gds_knn_edge_dist = dst2knnedge(gds_mat, num_knn=self.knn)
         
         # assign the scalar feature to the geodesic knn edge 
+        gds_knn_edge_index = data.gds_knn_edge_index
         gds_edge_sca = self.gds_edge_process(dlny_edge_index, gds_knn_edge_index, num_nodes=num_nodes)
 
         data.gds_edge_sca = gds_edge_sca 
-        data.gds_knn_edge_index = gds_knn_edge_index + data.ligand_pos.shape[0]
-        data.gds_dist = gds_knn_edge_dist
+        # data.gds_knn_edge_index = gds_knn_edge_index
+        # data.gds_dist = gds_knn_edge_dist
 
         # specify the number of nodes in the graph
         # data.num_nodes = data.compose_feature.shape[0]
@@ -267,6 +267,8 @@ class AtomComposer(object):
         data.compose_feature = torch.cat([ligand_context_feature_full, protein_surf_feature_full_expand],dim=0)
         data.idx_ligand_ctx_in_compose = torch.arange(len_ligand_ctx, dtype=torch.long)  # can be delete
         data.idx_protein_in_compose = torch.arange(len_protein, dtype=torch.long) + len_ligand_ctx  # can be delete
+        
+        # gds change
 
         # build knn graph and bond type
         data = self.get_knn_graph(data, self.knn, len_ligand_ctx, len_compose, num_workers=16)

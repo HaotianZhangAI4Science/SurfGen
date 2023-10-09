@@ -9,7 +9,7 @@ model:
     edge_channels: 64
     key_channels: 128
     num_heads: 4
-    num_interactions: 6
+    num_interactions: 4
     cutoff: 10.0
     knn: 48 # kNN Graph
   field:
@@ -25,9 +25,10 @@ model:
     n_component: 3
 
 train:
+  save: True
   seed: 2021
   use_apex: False
-  batch_size: 8
+  batch_size: 6
   num_workers: 8
   pin_memory: True
   resume_train: False
@@ -68,6 +69,7 @@ train:
 
 
 dataset:
-  name: pl
-  path: ./data/crossdocked_pocket10
+  index_path: ./data/crossdocked_pocket10/index.pkl
+  processed_path: ./data/crossdock_data/crossdock_data_gds.lmdb
+  name2id_path: ./data/crossdock_data/crossdock_gdsname2id.pt
   split: ./data/split_by_name.pt

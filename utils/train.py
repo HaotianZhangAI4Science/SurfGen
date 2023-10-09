@@ -76,6 +76,9 @@ def get_model_loss(model, batch, config):
             idx_protein_all_mask = batch.idx_protein_all_mask,
             y_protein_frontier = batch.y_protein_frontier,
 
+            gds_edge_sca = batch.gds_edge_sca,
+            gds_knn_edge_index = batch.gds_knn_edge_index,
+            gds_dist = batch.gds_dist,
             compose_knn_edge_index = batch.compose_knn_edge_index,
             compose_knn_edge_feature = batch.compose_knn_edge_feature,
             real_compose_knn_edge_index = torch.stack([batch.real_compose_knn_edge_index_0, batch.real_compose_knn_edge_index_1], dim=0),

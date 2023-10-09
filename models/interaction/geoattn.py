@@ -3,7 +3,7 @@
 # node_vec_dim = 3, edge_vec_dim = 3 
 from torch import nn
 from torch_scatter import scatter_sum
-from ..invariant import VNLinear, GVPerceptronVN
+from ..invariant import VNLinear, GVPerceptronVN, GVLinear
 import torch
 from torch_scatter import scatter_softmax
 from torch.nn import Sigmoid
@@ -49,11 +49,14 @@ class Geoattn_GNN(nn.Module):
         self.resi_connecter = GVLinear(node_sca_dim,node_vec_dim,node_sca_dim,node_vec_dim)
         self.aggr_out = GVPerceptronVN(node_sca_dim,node_vec_dim,node_sca_dim,node_vec_dim)
     
-    def forward(self, node_feats, edge_feature, edge_vector, edge_index):
+    def forward(self, node_feats, node_pos, edge_feature, edge_index):
         num_nodes = node_feats[0].shape[0]
-        edge_dist = torch.norm(edge_vector, dim=-1)
         edge_index_row = edge_index[0]
+        edge_index_col = edge_index[1]
+        edge_vector = node_pos[edge_index_row] - node_pos[edge_index_col]
 
+        edge_dist = torch.norm(edge_vector, dim=-1)
+    
         ## map edge_features: original space -> interation space
         edge_dist = torch.norm(edge_vector, dim=-1, p=2)
         edge_sca_feat = torch.cat([self.distance_expansion(edge_dist), edge_feature], dim=-1)
@@ -98,4 +101,3 @@ class Geoattn_GNN(nn.Module):
         out_sca, out_vec = self.aggr_out([out_sca, out_vec])
 
         return [out_sca, out_vec]
-

@@ -83,7 +83,7 @@ class InteractionModule(Module):
 
 
 ##############################################################################################################
-class CFTransformerEncoderVN(Module):
+class TransformerFeatureMixer(Module):
     
     def __init__(self, hidden_channels=[256, 64], edge_channels=64, num_edge_types=4, key_channels=128, num_heads=4, num_interactions=6, k=32, cutoff=10.0):
         super().__init__()

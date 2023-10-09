@@ -7,13 +7,11 @@ from .dataset import SurfLigandPairDataset
 
 
 def get_dataset(config, *args, **kwargs):
-    name = config.name
-    root = config.path
-    if name == 'pl':
-        dataset = SurfLigandPairDataset(root, *args, **kwargs)
-    else:
-        raise NotImplementedError('Unknown dataset: %s' % name)
-    
+    index_path = config.index_path
+    processed_path = config.processed_path
+    name2id = config.name2id_path
+    dataset = SurfLigandPairDataset(index_path,processed_path,name2id, *args, **kwargs)
+
     if 'split' in config:
         split_by_name = torch.load(config.split)
         split = {

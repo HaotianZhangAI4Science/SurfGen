@@ -46,7 +46,7 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    '--check_point',type=str,default='./ckpt/val_119.pt',
+    '--check_point',type=str,default='./ckpt/surfgen.pt',
     help='load the parameter'
 )
 
@@ -60,12 +60,14 @@ args = parser.parse_args()
 config = load_config(args.config)
 
 data = pdb_to_pocket_data(args.ply_file)
+
 contrastive_sampler = ContrastiveSample()
 ligand_featurizer = FeaturizeLigandAtom()
 protein_featurizer = FeaturizeProteinAtom()
 transform = Compose([
     RefineData(),
     LigandCountNeighbors(),
+    Geodesic_builder(),
     ligand_featurizer,
     protein_featurizer
 ])
@@ -93,6 +95,7 @@ def transform_data(data, transform):
     if transform is not None:
         data = transform(data)
     return data
+
 data = transform(data)
 data = transform_data(data, masking)
 np.seterr(invalid='ignore') 
@@ -152,10 +155,10 @@ while len(pool.finished) < config.sample.num_samples:
                 nexts.append(data_next)
 
         queue_tmp += nexts
-    prob = logp_to_rank_prob(np.array([p.average_logp[2:] for p in queue_tmp]),)  # (logp_focal, logpdf_pos), logp_element, logp_hasatom, logp_bond
+    prob = logp_to_rank_prob([p.average_logp[2:] for p in queue_tmp],)  # (logp_focal, logpdf_pos), logp_element, logp_hasatom, logp_bond
     n_tmp = len(queue_tmp)
     if n_tmp == 0:
-        print('{}th has filures!'.format(i))
+        print('{}th has filures!'.format(global_step))
         break
     else:
         next_idx = np.random.choice(np.arange(n_tmp), p=prob, size=min(config.sample.beam_size, n_tmp), replace=False)
