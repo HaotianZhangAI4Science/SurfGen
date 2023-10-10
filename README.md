@@ -3,9 +3,7 @@
 <div align=center>
 <img src="./assets/toc.png" width="50%" height="50%" alt="TOC" align=center />
 </div>
-<div align=center>
-<img src="./assets/96.gif" width="50%" height="50%" alt="TOC" align=center />
-</div>
+
 
 
 <center> The illustration of the generation process </center>
