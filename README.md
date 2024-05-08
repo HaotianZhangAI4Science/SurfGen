@@ -36,7 +36,7 @@ conda activate surfgen
 
 ### CUDA 12.1: Install manually
 
-Since Nvidia 40 series cards no longer support CUDA 11.3, I also created the SurfGen environment for a RTX-4080 powered-linux system. 
+Since Nvidia 40 series cards no longer support CUDA 11.3, I also created the SurfGen environment for an RTX-4080 powered linux system. 
 
 ```shell
 mamba create -n surfgen pytorch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 pytorch-cuda=12.1 plyfile pyg rdkit biopython easydict jupyter ipykernel lmdb -c pytorch -c nvidia -c pyg -c conda-forge
