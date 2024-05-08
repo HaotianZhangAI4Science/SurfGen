@@ -10,7 +10,7 @@
 
 ## Environment
 
-Install via conda .yml file (cuda 11.3)
+### CUDA11.3: Install via conda .yml file
 
 ```python
 conda install mamba
@@ -24,12 +24,31 @@ If you're reluctant to use mamba:
 conda env create -f surfgen_env.yml -n surfgen
 ```
 
+### CUDA11.3: Install via conda-pack file 
+
 We also provide conda-packed file [here](https://doi.org/10.5281/zenodo.7758282). Download it and then unzip it in your conda/envs/dir. For me, the directory is ~/.conda/envs. Special thanks to the creators and organizers of zenodo, which provides a free platform to store large files for academic use. 
 
 ```shell
 mkdir ~/.conda/envs/surfgen
 tar -xzvf surfgen.tar.gz -C ~/.conda/envs/surfgen
 conda activate surfgen
+```
+
+### CUDA 12.1: Install manually
+
+Since Nvidia 40 series cards no longer support CUDA 11.3, I also created the SurfGen environment for a RTX-4080 powered-linux system. 
+
+```shell
+mamba create -n surfgen pytorch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 pytorch-cuda=12.1 plyfile pyg rdkit biopython easydict jupyter ipykernel lmdb -c pytorch -c nvidia -c pyg -c conda-forge
+pip install lmdb
+pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.2.0+cu121.html
+```
+
+Note: PyG subgraph function has been put to another place, therefore, replace the following command at ./utils/transform.py
+
+```python
+# from torch_geometric.utils.subgraph import subgraph
+from torch_geometric.data.data import subgraph
 ```
 
 ## Data
