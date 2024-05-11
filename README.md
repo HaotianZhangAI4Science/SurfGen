@@ -140,3 +140,68 @@ python gen.py --outdir example --check_point ./ckpt/val_119.pt --ply_file ./exam
 python train.py
 ```
 
+
+
+## Note
+
+For surface generation, a common error is:
+
+```shen
+No such file or directory: '/tmp/tmpc5aa wvj/temp1_out.csv'
+```
+
+This error primarily originates from APBS tools. Breaking down the code reveals the exact problem:
+
+```shell
+error while loading shared libraries: libTABIPBlib.so: cannot open shared object file: No such file or directory
+```
+
+This occurs because the APBS library is not included in the `LD_LIBRARY_PATH`
+
+### How to fix
+
+For **Ubuntu 18 system**, once you download [APBS-3.0.0](https://github.com/Electrostatics/apbs/releases) (~300MB) and [pdb2pqr-2.1.1](https://github.com/Electrostatics/apbs-pdb2pqr/releases) on your computer, like:
+
+<div align=center>
+<img src="./assets/ubuntu18.png" width="30%" height="30%" alt="TOC" align=center />
+</div>
+
+Then, add the `LD_LIBRARY_PATH` to your `~/.bashrc`, for example:
+
+```shell
+# Install Vim if necessary:
+sudo apt install vim
+
+# Edit ~/.bashrc
+vim ~/.bashrc
+
+# Append the following command at the end of the ~/.bashrc:
+...
+export LD_LIBRARY_PATH="/home/haotian/software/miniconda3/envs/deepdock/lib:$LD_LIBRARY_PATH"
+...
+# Save and exit Vim, then activate the setting:
+
+source ~/.bashrc # active the setting
+```
+
+However, sometimes another error might occur:
+
+```shell
+libreadline.so.7: cannot open shared object file: No such file or directory
+```
+
+When I encountered this problem, I was using  **Ubuntu 22**. I found that `libreadline.so.7` is only available for **Ubuntu 18**, and there is no easy way to install `libreadline.so.7` on Ubuntu 22 system. Eventually, I found a solution by downloading both `APBS-3.0.0` and `APBS-3.4.1`. I stored these two software in [Zenodo](https://doi.org/10.5281/zenodo.11179235). 
+
+<div align=center>
+<img src="./assets/ubuntu20.png" width="30%" height="30%" alt="TOC" align=center />
+</div>
+
+Assign the paths at `./utils/masif/generate_prot_ply.py` as follows:
+
+```python
+msms_bin="{install_path}/APBS-3.0.0.Linux/bin/msms"
+apbs_bin = '{install_path}/APBS-3.4.1.Linux/bin/apbs'
+pdb2pqr_bin="{install_path}/pdb2pqr-linux-bin64-2.1.1/pdb2pqr"
+multivalue_bin="{install_path}/APBS-3.0.0.Linux/share/apbs/tools/bin/multivalue"
+```
+
