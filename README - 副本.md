@@ -1,13 +1,3 @@
-# :loudspeaker: SurfGen: Learning on Topological Surface and Geometric Structure for 3D Molecular Generation
-
-<div align=center>
-<img src="./assets/toc.png" width="50%" height="50%" alt="TOC" align=center />
-</div>
-
-
-
-<center> The illustration of the generation process </center>
-
 ## Environment
 
 ### CUDA11.3: Install via conda .yml file
@@ -36,7 +26,7 @@ conda activate surfgen
 
 ### CUDA 12.1: Install manually
 
-Since Nvidia 40 series cards no longer support CUDA 11.3, I also created the SurfGen environment for an RTX-4080-powered linux system. 
+Since Nvidia 40 series cards no longer support CUDA 11.3, I also created the SurfGen environment for an RTX-4080 powered linux system. 
 
 ```shell
 mamba create -n surfgen pytorch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 pytorch-cuda=12.1 plyfile pyg rdkit biopython easydict jupyter ipykernel lmdb -c pytorch -c nvidia -c pyg -c conda-forge
@@ -102,30 +92,15 @@ When the base python environment was created, then install [APBS-3.0.0](https://
 
 #### Try Generate Surface Now !
 
-Having successfully set up all the necessary environments, you can now proceed to generate surface data. Please follow the instructions in `./data/surf_maker` for this process. Alternatively, to test the successful configuration of your environment, you can execute the `./data/surf_maker/surf_maker_test.py` script.
-
-```shell
-from generate_prot_ply import compute_inp_surface
-# or from utils.generate_prot_ply import compute_inp_surface
-prot_path = './PLD-1/8k5n_protein.pdb'
-lig_path = './PLD-1/8k5n_ligand.sdf'
-compute_inp_surface(prot_path, lig_path)
-# It will take about 10s to compute a ply file in a single run. 
-```
-
-If you face the error: "**error while loading shared libraries: libTABIPBlib.so: cannot open shared object file: No such file or directory**". please add the following line to your ~/.bashrc file or directly add it to the os.environ. Then set the msms_bin, apbs_bin, pdb2pqr_bin, multivalue_bin to the correct path in your system 
+Now you have deployed all the dependent environments. Please follow the ./data/surf_maker for making surface data. Or run the ./data/surf_maker/surf_maker_test.py for testing whether you have figured out this environment successfully. 
 
 ```python
-import os
-# change the path for your own path
-os.environ["LD_LIBRARY_PATH"] = '/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/APBS-3.0.0.Linux/lib'
-msms_bin="/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/APBS-3.0.0.Linux/bin/msms"
-apbs_bin = '/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/APBS-3.0.0.Linux/bin/apbs'
-pdb2pqr_bin="/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/pdb2pqr-linux-bin64-2.1.1/pdb2pqr"
-multivalue_bin="/home/haotian/Molecule_Generation/SurfBP/dataset/install_software/APBS-3.0.0.Linux/share/apbs/tools/bin/multivalue"
+python ./data/surf_maker/generate_surface.ipynb
 ```
 
-We provide the generated surface file at ./data, namely 3cl_pocket_8.0_res_1.5.ply for further generation. 
+If the surface is generated, you will find the .ply file in the ./data/surf_maker
+
+And we provide the generated surface file at ./data, namely 3cl_pocket_8.0_res_1.5.ply for further generation. 
 
 <div align=center>
 <img src="./assets/surface.png" width="50%" height="50%" alt="TOC" align=center />
