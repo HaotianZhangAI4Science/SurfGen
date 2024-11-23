@@ -157,6 +157,25 @@ python train.py
 
 
 
+## Cite
+
+If you find this work interesting, please cite:
+
+```
+@article{zhang2023learning,
+  title={Learning on topological surface and geometric structure for 3D molecular generation},
+  author={Zhang, Odin and Wang, Tianyue and Weng, Gaoqi and Jiang, Dejun and Wang, Ning and Wang, Xiaorui and Zhao, Huifeng and Wu, Jialu and Wang, Ercheng and Chen, Guangyong and others},
+  journal={Nature Computational Science},
+  volume={3},
+  number={10},
+  pages={849--859},
+  year={2023},
+  publisher={Nature Publishing Group US New York}
+}
+```
+
+
+
 ## Note
 
 For surface generation, a common error is:
